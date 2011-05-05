@@ -8,7 +8,7 @@
 	<packaging>jar</packaging>
 
 	<name>jnazmq</name>
-	<description>ZeroMQ JNA Java Bindings</description>
+	<description>ZeroMQ Java JNA Bindings</description>
 	<url>http://ostendorf.com/</url>
 
 	<licenses>
@@ -36,11 +36,19 @@
 		<maven-javadoc-plugin.version>2.7</maven-javadoc-plugin.version>
 		<maven-shade-plugin.version>1.4</maven-shade-plugin.version>
 
+		<jna.version>3.2.3</jna.version>
 		<junit.version>4.8.2</junit.version>
 
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>${jna.version}</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
