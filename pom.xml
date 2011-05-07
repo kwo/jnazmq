@@ -2,14 +2,14 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.ostendorf</groupId>
+	<groupId>org.zeromq</groupId>
 	<artifactId>jnazmq</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>jnazmq</name>
 	<description>ZeroMQ Java JNA Bindings</description>
-	<url>http://ostendorf.com/</url>
+	<url>http://zeromq.org/</url>
 
 	<licenses>
 		<license>
@@ -35,6 +35,7 @@
 		<maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
 		<maven-javadoc-plugin.version>2.7</maven-javadoc-plugin.version>
 		<maven-shade-plugin.version>1.4</maven-shade-plugin.version>
+		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
 
 		<jna.version>3.2.3</jna.version>
 		<junit.version>4.8.2</junit.version>
@@ -91,12 +92,22 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>${maven-javadoc-plugin.version}</version>
-				<configuration>
-					<links>
-					</links>
-				</configuration>
 			</plugin>
 
 		</plugins>
