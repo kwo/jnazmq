@@ -2,13 +2,13 @@ package org.zeromq;
 
 import com.sun.jna.Native;
 
-public class ZMQ {
+public class Zmq {
 
 	public static enum Device {
 
-		ZMQ_FORWARDER(ZMQLibrary.ZMQ_FORWARDER),
-		ZMQ_QUEUE(ZMQLibrary.ZMQ_QUEUE),
-		ZMQ_STREAMER(ZMQLibrary.ZMQ_STREAMER);
+		ZMQ_FORWARDER(ZmqLibrary.ZMQ_FORWARDER),
+		ZMQ_QUEUE(ZmqLibrary.ZMQ_QUEUE),
+		ZMQ_STREAMER(ZmqLibrary.ZMQ_STREAMER);
 
 		public static Device findByCode(final int code) {
 			for (final Device x : values())
@@ -27,18 +27,18 @@ public class ZMQ {
 
 	public static enum Error {
 
-		EADDRINUSE(ZMQLibrary.EADDRINUSE),
-		EADDRNOTAVAIL(ZMQLibrary.EADDRNOTAVAIL),
-		ECONNREFUSED(ZMQLibrary.ECONNREFUSED),
-		EFSM(ZMQLibrary.EFSM),
-		EINPROGRESS(ZMQLibrary.EINPROGRESS),
-		EMTHREAD(ZMQLibrary.EMTHREAD),
-		ENETDOWN(ZMQLibrary.ENETDOWN),
-		ENOBUFS(ZMQLibrary.ENOBUFS),
-		ENOCOMPATPROTO(ZMQLibrary.ENOCOMPATPROTO),
-		ENOTSUP(ZMQLibrary.ENOTSUP),
-		EPROTONOSUPPORT(ZMQLibrary.EPROTONOSUPPORT),
-		ETERM(ZMQLibrary.ETERM);
+		EADDRINUSE(ZmqLibrary.EADDRINUSE),
+		EADDRNOTAVAIL(ZmqLibrary.EADDRNOTAVAIL),
+		ECONNREFUSED(ZmqLibrary.ECONNREFUSED),
+		EFSM(ZmqLibrary.EFSM),
+		EINPROGRESS(ZmqLibrary.EINPROGRESS),
+		EMTHREAD(ZmqLibrary.EMTHREAD),
+		ENETDOWN(ZmqLibrary.ENETDOWN),
+		ENOBUFS(ZmqLibrary.ENOBUFS),
+		ENOCOMPATPROTO(ZmqLibrary.ENOCOMPATPROTO),
+		ENOTSUP(ZmqLibrary.ENOTSUP),
+		EPROTONOSUPPORT(ZmqLibrary.EPROTONOSUPPORT),
+		ETERM(ZmqLibrary.ETERM);
 
 		public static Error findByCode(final int code) {
 			for (final Error x : values())
@@ -57,9 +57,9 @@ public class ZMQ {
 
 	public static enum MessageFlag {
 
-		ZMQ_MSG_MASK(ZMQLibrary.ZMQ_MSG_MASK),
-		ZMQ_MSG_MORE(ZMQLibrary.ZMQ_MSG_MORE),
-		ZMQ_MSG_SHARED(ZMQLibrary.ZMQ_MSG_SHARED);
+		ZMQ_MSG_MASK(ZmqLibrary.ZMQ_MSG_MASK),
+		ZMQ_MSG_MORE(ZmqLibrary.ZMQ_MSG_MORE),
+		ZMQ_MSG_SHARED(ZmqLibrary.ZMQ_MSG_SHARED);
 
 		public static MessageFlag findByCode(final int code) {
 			for (final MessageFlag x : values())
@@ -78,8 +78,8 @@ public class ZMQ {
 
 	public static enum MessageType {
 
-		ZMQ_DELIMITER(ZMQLibrary.ZMQ_DELIMITER),
-		ZMQ_VSM(ZMQLibrary.ZMQ_VSM);
+		ZMQ_DELIMITER(ZmqLibrary.ZMQ_DELIMITER),
+		ZMQ_VSM(ZmqLibrary.ZMQ_VSM);
 
 		public static MessageType findByCode(final int code) {
 			for (final MessageType x : values())
@@ -98,9 +98,9 @@ public class ZMQ {
 
 	public static enum Multiplex {
 
-		ZMQ_POLLERR(ZMQLibrary.ZMQ_POLLERR),
-		ZMQ_POLLIN(ZMQLibrary.ZMQ_POLLIN),
-		ZMQ_POLLOUT(ZMQLibrary.ZMQ_POLLOUT);
+		ZMQ_POLLERR(ZmqLibrary.ZMQ_POLLERR),
+		ZMQ_POLLIN(ZmqLibrary.ZMQ_POLLIN),
+		ZMQ_POLLOUT(ZmqLibrary.ZMQ_POLLOUT);
 
 		public static Multiplex findByCode(final int code) {
 			for (final Multiplex x : values())
@@ -119,26 +119,26 @@ public class ZMQ {
 
 	public static enum SocketOption {
 
-		ZMQ_AFFINITY(ZMQLibrary.ZMQ_AFFINITY),
-		ZMQ_BACKLOG(ZMQLibrary.ZMQ_BACKLOG),
-		ZMQ_EVENTS(ZMQLibrary.ZMQ_EVENTS),
-		ZMQ_FD(ZMQLibrary.ZMQ_FD),
-		ZMQ_HWM(ZMQLibrary.ZMQ_HWM),
-		ZMQ_IDENTITY(ZMQLibrary.ZMQ_IDENTITY),
-		ZMQ_LINGER(ZMQLibrary.ZMQ_LINGER),
-		ZMQ_MCAST_LOOP(ZMQLibrary.ZMQ_MCAST_LOOP),
-		ZMQ_RATE(ZMQLibrary.ZMQ_RATE),
-		ZMQ_RCVBUF(ZMQLibrary.ZMQ_RCVBUF),
-		ZMQ_RCVMORE(ZMQLibrary.ZMQ_RCVMORE),
-		ZMQ_RECONNECT_IVL(ZMQLibrary.ZMQ_RECONNECT_IVL),
-		ZMQ_RECONNECT_IVL_MAX(ZMQLibrary.ZMQ_RECONNECT_IVL_MAX),
-		ZMQ_RECOVERY_IVL(ZMQLibrary.ZMQ_RECOVERY_IVL),
-		ZMQ_RECOVERY_IVL_MSEC(ZMQLibrary.ZMQ_RECOVERY_IVL_MSEC),
-		ZMQ_SNDBUF(ZMQLibrary.ZMQ_SNDBUF),
-		ZMQ_SUBSCRIBE(ZMQLibrary.ZMQ_SUBSCRIBE),
-		ZMQ_SWAP(ZMQLibrary.ZMQ_SWAP),
-		ZMQ_TYPE(ZMQLibrary.ZMQ_TYPE),
-		ZMQ_UNSUBSCRIBE(ZMQLibrary.ZMQ_UNSUBSCRIBE);
+		ZMQ_AFFINITY(ZmqLibrary.ZMQ_AFFINITY),
+		ZMQ_BACKLOG(ZmqLibrary.ZMQ_BACKLOG),
+		ZMQ_EVENTS(ZmqLibrary.ZMQ_EVENTS),
+		ZMQ_FD(ZmqLibrary.ZMQ_FD),
+		ZMQ_HWM(ZmqLibrary.ZMQ_HWM),
+		ZMQ_IDENTITY(ZmqLibrary.ZMQ_IDENTITY),
+		ZMQ_LINGER(ZmqLibrary.ZMQ_LINGER),
+		ZMQ_MCAST_LOOP(ZmqLibrary.ZMQ_MCAST_LOOP),
+		ZMQ_RATE(ZmqLibrary.ZMQ_RATE),
+		ZMQ_RCVBUF(ZmqLibrary.ZMQ_RCVBUF),
+		ZMQ_RCVMORE(ZmqLibrary.ZMQ_RCVMORE),
+		ZMQ_RECONNECT_IVL(ZmqLibrary.ZMQ_RECONNECT_IVL),
+		ZMQ_RECONNECT_IVL_MAX(ZmqLibrary.ZMQ_RECONNECT_IVL_MAX),
+		ZMQ_RECOVERY_IVL(ZmqLibrary.ZMQ_RECOVERY_IVL),
+		ZMQ_RECOVERY_IVL_MSEC(ZmqLibrary.ZMQ_RECOVERY_IVL_MSEC),
+		ZMQ_SNDBUF(ZmqLibrary.ZMQ_SNDBUF),
+		ZMQ_SUBSCRIBE(ZmqLibrary.ZMQ_SUBSCRIBE),
+		ZMQ_SWAP(ZmqLibrary.ZMQ_SWAP),
+		ZMQ_TYPE(ZmqLibrary.ZMQ_TYPE),
+		ZMQ_UNSUBSCRIBE(ZmqLibrary.ZMQ_UNSUBSCRIBE);
 
 		public static SocketOption findByCode(final int code) {
 			for (final SocketOption x : values())
@@ -157,8 +157,8 @@ public class ZMQ {
 
 	public static enum SocketSendRecvOption {
 
-		ZMQ_NOBLOCK(ZMQLibrary.ZMQ_NOBLOCK),
-		ZMQ_SNDMORE(ZMQLibrary.ZMQ_SNDMORE);
+		ZMQ_NOBLOCK(ZmqLibrary.ZMQ_NOBLOCK),
+		ZMQ_SNDMORE(ZmqLibrary.ZMQ_SNDMORE);
 
 		public static SocketSendRecvOption findByCode(final int code) {
 			for (final SocketSendRecvOption x : values())
@@ -178,24 +178,24 @@ public class ZMQ {
 	public static enum SocketType {
 
 		@Deprecated
-		DOWNSTREAM(ZMQLibrary.ZMQ_PUSH),
-		ZMQ_DEALER(ZMQLibrary.ZMQ_DEALER),
-		ZMQ_PAIR(ZMQLibrary.ZMQ_PAIR),
-		ZMQ_PUB(ZMQLibrary.ZMQ_PUB),
-		ZMQ_PULL(ZMQLibrary.ZMQ_PULL),
-		ZMQ_PUSH(ZMQLibrary.ZMQ_PUSH),
-		ZMQ_REP(ZMQLibrary.ZMQ_REP),
-		ZMQ_REQ(ZMQLibrary.ZMQ_REQ),
-		ZMQ_ROUTER(ZMQLibrary.ZMQ_ROUTER),
-		ZMQ_SUB(ZMQLibrary.ZMQ_SUB),
+		DOWNSTREAM(ZmqLibrary.ZMQ_PUSH),
+		ZMQ_DEALER(ZmqLibrary.ZMQ_DEALER),
+		ZMQ_PAIR(ZmqLibrary.ZMQ_PAIR),
+		ZMQ_PUB(ZmqLibrary.ZMQ_PUB),
+		ZMQ_PULL(ZmqLibrary.ZMQ_PULL),
+		ZMQ_PUSH(ZmqLibrary.ZMQ_PUSH),
+		ZMQ_REP(ZmqLibrary.ZMQ_REP),
+		ZMQ_REQ(ZmqLibrary.ZMQ_REQ),
+		ZMQ_ROUTER(ZmqLibrary.ZMQ_ROUTER),
+		ZMQ_SUB(ZmqLibrary.ZMQ_SUB),
 		@Deprecated
-		ZMQ_UPSTREAM(ZMQLibrary.ZMQ_PULL),
-		ZMQ_XPUB(ZMQLibrary.ZMQ_XPUB),
+		ZMQ_UPSTREAM(ZmqLibrary.ZMQ_PULL),
+		ZMQ_XPUB(ZmqLibrary.ZMQ_XPUB),
 		@Deprecated
-		ZMQ_XREP(ZMQLibrary.ZMQ_ROUTER),
+		ZMQ_XREP(ZmqLibrary.ZMQ_ROUTER),
 		@Deprecated
-		ZMQ_XREQ(ZMQLibrary.ZMQ_DEALER),
-		ZMQ_XSUB(ZMQLibrary.ZMQ_XSUB);
+		ZMQ_XREQ(ZmqLibrary.ZMQ_DEALER),
+		ZMQ_XSUB(ZmqLibrary.ZMQ_XSUB);
 
 		public static SocketType findByCode(final int code) {
 			for (final SocketType x : values())
@@ -214,15 +214,15 @@ public class ZMQ {
 
 	public static final int VERSION;
 
-	private static final ZMQLibrary zmq;
+	private static final ZmqLibrary zmq;
 
 	static {
-		zmq = (ZMQLibrary) Native.loadLibrary("zmq", ZMQLibrary.class);
+		zmq = (ZmqLibrary) Native.loadLibrary("zmq", ZmqLibrary.class);
 		VERSION = make_version(version());
 	}
 
-	public static Context context(final int ioThreads) {
-		return new Context(zmq, ioThreads);
+	public static ZmqContext context(final int ioThreads) {
+		return new ZmqContext(zmq, ioThreads);
 	}
 
 	public static int make_version(final int major, final int minor, final int patch) {
@@ -241,7 +241,7 @@ public class ZMQ {
 		return new int[] { major[0], minor[0], patch[0] };
 	}
 
-	private ZMQ() {
+	private Zmq() {
 	}
 
 }

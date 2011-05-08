@@ -1,17 +1,17 @@
 package org.zeromq;
 
-import org.zeromq.ZMQ.SocketType;
+import org.zeromq.Zmq.SocketType;
 
 import com.sun.jna.Pointer;
 
-public class Socket {
+public class ZmqSocket {
 
-	final Pointer handle;
-	private final ZMQLibrary zmq;
+	private final Pointer handle;
+	private final ZmqLibrary zmq;
 
-	protected Socket(final ZMQLibrary zmq, final Context ctx, final SocketType type) {
+	protected ZmqSocket(final ZmqLibrary zmq, final ZmqContext ctx, final SocketType type) {
 		this.zmq = zmq;
-		this.handle = zmq.zmq_socket(ctx.handle, type.code);
+		this.handle = zmq.zmq_socket(ctx.getHandle(), type.code);
 	}
 
 	public void close() {
@@ -46,7 +46,7 @@ public class Socket {
 	private void check(final int rc) {
 		if (rc != 0) {
 			final int err = this.zmq.zmq_errno();
-			throw new ZMQException(this.zmq.zmq_strerror(err), err);
+			throw new ZmqException(this.zmq.zmq_strerror(err), err);
 		}
 	}
 

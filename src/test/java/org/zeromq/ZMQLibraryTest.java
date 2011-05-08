@@ -10,11 +10,11 @@ import com.sun.jna.Pointer;
 
 public class ZMQLibraryTest {
 
-	private static ZMQLibrary ZMQ = null;
+	private static ZmqLibrary ZMQ = null;
 
 	@BeforeClass
 	public static void setup() {
-		ZMQ = (ZMQLibrary) Native.loadLibrary("zmq", ZMQLibrary.class);
+		ZMQ = (ZmqLibrary) Native.loadLibrary("zmq", ZmqLibrary.class);
 	}
 
 	@AfterClass
@@ -37,7 +37,7 @@ public class ZMQLibraryTest {
 		final Pointer ctx = ZMQ.zmq_init(1);
 		Assert.assertNotNull(ctx);
 
-		final Pointer s = ZMQ.zmq_socket(ctx, ZMQLibrary.ZMQ_PULL);
+		final Pointer s = ZMQ.zmq_socket(ctx, ZmqLibrary.ZMQ_PULL);
 		Assert.assertNotNull(s);
 		rc = ZMQ.zmq_close(s);
 		Assert.assertEquals(0, rc);

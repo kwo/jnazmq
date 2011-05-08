@@ -36,7 +36,7 @@ import com.sun.jna.Structure;
  * @author Karl Ostendorf <karl@ostendorf.com>
  *
  */
-public interface ZMQLibrary extends Library {
+public interface ZmqLibrary extends Library {
 
 	/******************************************************************************/
 	/*  0MQ versioning support.                                                   */
