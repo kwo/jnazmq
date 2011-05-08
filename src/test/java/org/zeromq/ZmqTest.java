@@ -1,5 +1,7 @@
 package org.zeromq;
 
+import java.util.UUID;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -9,7 +11,7 @@ public class ZmqTest {
 	@Test
 	public void testContext() {
 
-		final ZmqContext ctx = ZmqContext.getInstance(1);
+		final ZmqContext ctx = Zmq.getContext(1);
 		Assert.assertNotNull(ctx);
 		ctx.term();
 
@@ -18,13 +20,19 @@ public class ZmqTest {
 	@Test
 	public void testSocket() {
 
-		final ZmqContext ctx = ZmqContext.getInstance(1);
+		final ZmqContext ctx = Zmq.getContext(1);
+
+		final byte[] id1 = UUID.randomUUID().toString().getBytes();
 
 		final ZmqSocket s = ctx.socket(ZmqSocket.Type.ZMQ_PULL);
+		s.setIdentity(id1);
 		s.connect("tcp://localhost:44444");
+		final byte[] id2 = s.getIdentity();
 		s.close();
 
 		ctx.term();
+
+		Assert.assertEquals(id1.length, id2.length);
 
 	}
 

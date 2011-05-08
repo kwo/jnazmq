@@ -10,13 +10,9 @@ public class ZmqContext {
 		zmq = Zmq.getLibrary();
 	}
 
-	public static ZmqContext getInstance(final int ioThreads) {
-		return new ZmqContext(ioThreads);
-	}
-
 	private final Pointer handle;
 
-	private ZmqContext(final int ioThreads) {
+	ZmqContext(final int ioThreads) {
 		this.handle = zmq.zmq_init(ioThreads);
 	}
 

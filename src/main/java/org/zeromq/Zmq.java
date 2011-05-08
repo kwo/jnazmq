@@ -16,6 +16,10 @@ public class Zmq {
 		}
 	}
 
+	public static ZmqContext getContext(final int ioThreads) {
+		return new ZmqContext(ioThreads);
+	}
+
 	public static int make_version(final int major, final int minor, final int patch) {
 		return (major * 10000) + (minor * 100) + patch;
 	}
