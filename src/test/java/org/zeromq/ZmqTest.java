@@ -29,6 +29,7 @@ public class ZmqTest {
 		s.setIdentity(id1);
 		s.connect("tcp://localhost:44444");
 		final byte[] id2 = s.getIdentity();
+		Assert.assertEquals(ZmqSocket.Type.ZMQ_PULL, s.getType());
 		s.close();
 
 		ctx.term();

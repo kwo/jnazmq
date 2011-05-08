@@ -4,16 +4,16 @@ import com.sun.jna.Pointer;
 
 public class ZmqContext {
 
-	private static final ZmqLibrary zmq;
+	private static final ZmqLibrary zmqlib;
 
 	static {
-		zmq = Zmq.getLibrary();
+		zmqlib = Zmq.getLibrary();
 	}
 
 	private final Pointer handle;
 
 	ZmqContext(final int ioThreads) {
-		this.handle = zmq.zmq_init(ioThreads);
+		this.handle = zmqlib.zmq_init(ioThreads);
 	}
 
 	public ZmqSocket socket(final ZmqSocket.Type type) {
@@ -21,7 +21,7 @@ public class ZmqContext {
 	}
 
 	public void term() {
-		check(zmq.zmq_term(this.handle));
+		check(zmqlib.zmq_term(this.handle));
 	}
 
 	Pointer getHandle() {
@@ -30,8 +30,8 @@ public class ZmqContext {
 
 	private void check(final int rc) {
 		if (rc != 0) {
-			final int err = zmq.zmq_errno();
-			throw new ZmqException(zmq.zmq_strerror(err), err);
+			final int err = zmqlib.zmq_errno();
+			throw new ZmqException(zmqlib.zmq_strerror(err), err);
 		}
 	}
 

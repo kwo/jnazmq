@@ -102,23 +102,23 @@ public class ZmqSocket {
 
 	}
 
-	private static final ZmqLibrary zmq;
+	private static final ZmqLibrary zmqlib;
 	static {
-		zmq = Zmq.getLibrary();
+		zmqlib = Zmq.getLibrary();
 	}
 
 	private final Pointer handle;
 
 	ZmqSocket(final ZmqContext ctx, final ZmqSocket.Type type) {
-		this.handle = zmq.zmq_socket(ctx.getHandle(), type.code);
+		this.handle = zmqlib.zmq_socket(ctx.getHandle(), type.code);
 	}
 
 	public void close() {
-		check(zmq.zmq_close(this.handle));
+		check(zmqlib.zmq_close(this.handle));
 	}
 
 	public void connect(final String address) {
-		check(zmq.zmq_connect(this.handle, address));
+		check(zmqlib.zmq_connect(this.handle, address));
 	}
 
 	public byte[] getIdentity() {
@@ -126,29 +126,27 @@ public class ZmqSocket {
 	}
 
 	public ZmqSocket.Type getType() {
+		return Type.findByCode((int) getSocketOptionLong(Option.ZMQ_TYPE));
+	}
 
-		// return ZMQ.zmq_getsockopt(this.handle, option, opt_val, opt_len)
+	public byte[] recv(final SendRecvOption... opts) {
 		return null;
 	}
 
-	public byte[] recv(final int flags) {
-		return null;
-	}
-
-	public void send(final byte[] data, final int flags) {
+	public void send(final byte[] data, final SendRecvOption... opts) {
 
 	}
 
 	public void setIdentity(final byte[] id) {
 		final Memory m = new Memory(id.length);
 		m.write(0, id, 0, id.length);
-		check(zmq.zmq_setsockopt(this.handle, Option.ZMQ_IDENTITY.code, m, new NativeLong(m.getSize())));
+		check(zmqlib.zmq_setsockopt(this.handle, Option.ZMQ_IDENTITY.code, m, new NativeLong(m.getSize())));
 	}
 
 	private void check(final int rc) {
 		if (rc != 0) {
-			final int err = zmq.zmq_errno();
-			throw new ZmqException(zmq.zmq_strerror(err), err);
+			final int err = zmqlib.zmq_errno();
+			throw new ZmqException(zmqlib.zmq_strerror(err), err);
 		}
 	}
 
@@ -156,8 +154,17 @@ public class ZmqSocket {
 		final Memory m = new Memory(capacity);
 		m.clear(capacity);
 		final LongByReference size = new LongByReference(capacity);
-		check(zmq.zmq_getsockopt(this.handle, opt.code, m, size));
+		check(zmqlib.zmq_getsockopt(this.handle, opt.code, m, size));
 		return m.getByteArray(0, (int) size.getValue());
+	}
+
+	private long getSocketOptionLong(final Option opt) {
+		final int capacity = 8;
+		final Memory m = new Memory(capacity);
+		m.clear(capacity);
+		final LongByReference size = new LongByReference(capacity);
+		check(zmqlib.zmq_getsockopt(this.handle, opt.code, m, size));
+		return m.getLong(0);
 	}
 
 }

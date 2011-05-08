@@ -7,11 +7,11 @@ public class Zmq {
 	public static final int VERSION;
 
 	private static final Object lock = new Object();
-	private static final ZmqLibrary zmq;
+	private static final ZmqLibrary zmqlib;
 
 	static {
 		synchronized (lock) {
-			zmq = (ZmqLibrary) Native.loadLibrary("zmq", ZmqLibrary.class);
+			zmqlib = (ZmqLibrary) Native.loadLibrary("zmq", ZmqLibrary.class);
 			VERSION = make_version(version());
 		}
 	}
@@ -32,13 +32,13 @@ public class Zmq {
 		final int[] major = new int[1];
 		final int[] minor = new int[1];
 		final int[] patch = new int[1];
-		zmq.zmq_version(major, minor, patch);
+		zmqlib.zmq_version(major, minor, patch);
 		return new int[] { major[0], minor[0], patch[0] };
 	}
 
 	static ZmqLibrary getLibrary() {
 		synchronized (lock) {
-			return zmq;
+			return zmqlib;
 		}
 	}
 
