@@ -107,7 +107,6 @@ public class ZmqSocket {
 	private final Pointer handle;
 
 	ZmqSocket(final ZmqContext ctx, final ZmqSocket.Type type) {
-
 		this.handle = zmq.zmq_socket(ctx.getHandle(), type.code);
 	}
 

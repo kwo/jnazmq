@@ -4,7 +4,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-public class ZMQTest {
+public class ZmqTest {
 
 	@Test
 	public void testContext() {
@@ -37,6 +37,8 @@ public class ZMQTest {
 		Assert.assertEquals(2, version[0]);
 		Assert.assertEquals(1, version[1]);
 		Assert.assertEquals(6, version[2]);
+
+		Assert.assertEquals(Zmq.VERSION, Zmq.make_version(2, 1, 6));
 
 	}
 
