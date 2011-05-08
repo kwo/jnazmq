@@ -3,14 +3,13 @@ package org.zeromq;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.zeromq.ZmqSocket.Type;
 
 public class ZMQTest {
 
 	@Test
 	public void testContext() {
 
-		final ZmqContext ctx = Zmq.context(1);
+		final ZmqContext ctx = ZmqContext.getInstance(1);
 		Assert.assertNotNull(ctx);
 		ctx.term();
 
@@ -19,7 +18,7 @@ public class ZMQTest {
 	@Test
 	public void testSocket() {
 
-		final ZmqContext ctx = Zmq.context(1);
+		final ZmqContext ctx = ZmqContext.getInstance(1);
 
 		final ZmqSocket s = ctx.socket(ZmqSocket.Type.ZMQ_PULL);
 		s.connect("tcp://localhost:44444");
