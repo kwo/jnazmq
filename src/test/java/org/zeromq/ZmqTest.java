@@ -1,5 +1,6 @@
 package org.zeromq;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 import junit.framework.Assert;
@@ -33,6 +34,7 @@ public class ZmqTest {
 		ctx.term();
 
 		Assert.assertEquals(id1.length, id2.length);
+		Assert.assertTrue(Arrays.equals(id1, id2));
 
 	}
 

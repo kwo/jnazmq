@@ -26,6 +26,8 @@ import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 import com.sun.jna.Structure;
 
+import com.sun.jna.ptr.LongByReference;
+
 /**
  * 
  * ZeroMQ JNA library interface, taken directly from zmq.h.
@@ -188,7 +190,7 @@ public interface ZmqLibrary extends Library {
 	Pointer zmq_socket (Pointer context, int type);
 	int zmq_close (Pointer s);
 	int zmq_setsockopt (Pointer s, int option, Pointer optval, NativeLong optvallen);
-	int zmq_getsockopt (Pointer s, int option, Pointer optval, NativeLong optvallen);
+	int zmq_getsockopt (Pointer s, int option, Pointer optval, LongByReference optvallen);
 	int zmq_bind (Pointer s, String addr);
 	int zmq_connect (Pointer s, String addr);
 	int zmq_send (Pointer s, zmq_msg_t msg, int flags);

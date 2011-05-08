@@ -1,6 +1,9 @@
 package org.zeromq;
 
+import com.sun.jna.Memory;
+import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
+import com.sun.jna.ptr.LongByReference;
 
 public class ZmqSocket {
 
@@ -119,10 +122,11 @@ public class ZmqSocket {
 	}
 
 	public byte[] getIdentity() {
-		return null;
+		return getSocketOptionByteArray(Option.ZMQ_IDENTITY, 1024);
 	}
 
 	public ZmqSocket.Type getType() {
+
 		// return ZMQ.zmq_getsockopt(this.handle, option, opt_val, opt_len)
 		return null;
 	}
@@ -136,7 +140,9 @@ public class ZmqSocket {
 	}
 
 	public void setIdentity(final byte[] id) {
-
+		final Memory m = new Memory(id.length);
+		m.write(0, id, 0, id.length);
+		check(zmq.zmq_setsockopt(this.handle, Option.ZMQ_IDENTITY.code, m, new NativeLong(m.getSize())));
 	}
 
 	private void check(final int rc) {
@@ -144,6 +150,14 @@ public class ZmqSocket {
 			final int err = zmq.zmq_errno();
 			throw new ZmqException(zmq.zmq_strerror(err), err);
 		}
+	}
+
+	private byte[] getSocketOptionByteArray(final Option opt, final int capacity) {
+		final Memory m = new Memory(capacity);
+		m.clear(capacity);
+		final LongByReference size = new LongByReference(capacity);
+		check(zmq.zmq_getsockopt(this.handle, opt.code, m, size));
+		return m.getByteArray(0, (int) size.getValue());
 	}
 
 }
