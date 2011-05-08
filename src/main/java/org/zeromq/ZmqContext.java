@@ -1,25 +1,27 @@
 package org.zeromq;
 
-import org.zeromq.Zmq.SocketType;
-
 import com.sun.jna.Pointer;
 
 public class ZmqContext {
 
-	private final Pointer handle;
-	private final ZmqLibrary zmq;
+	private static final ZmqLibrary zmq;
 
-	ZmqContext(final ZmqLibrary zmq, final int ioThreads) {
-		this.zmq = zmq;
+	static {
+		zmq = Zmq.getLibrary();
+	}
+
+	private final Pointer handle;
+
+	private ZmqContext(final int ioThreads) {
 		this.handle = zmq.zmq_init(ioThreads);
 	}
 
-	public ZmqSocket socket(final SocketType type) {
-		return new ZmqSocket(this.zmq, this, type);
+	public ZmqSocket socket(final ZmqSocket.Type type) {
+		return new ZmqSocket(this, type);
 	}
 
 	public void term() {
-		check(this.zmq.zmq_term(this.handle));
+		check(zmq.zmq_term(this.handle));
 	}
 
 	Pointer getHandle() {
@@ -28,8 +30,8 @@ public class ZmqContext {
 
 	private void check(final int rc) {
 		if (rc != 0) {
-			final int err = this.zmq.zmq_errno();
-			throw new ZmqException(this.zmq.zmq_strerror(err), err);
+			final int err = zmq.zmq_errno();
+			throw new ZmqException(zmq.zmq_strerror(err), err);
 		}
 	}
 
