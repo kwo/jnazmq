@@ -16,7 +16,7 @@ public class ZmqContext {
 		this.handle = zmqlib.zmq_init(ioThreads);
 	}
 
-	public ZmqSocket socket(final ZmqSocket.Type type) {
+	public ZmqSocket getSocket(final ZmqSocket.Type type) {
 		return new ZmqSocket(this, type);
 	}
 

@@ -19,19 +19,36 @@ public class ZmqTest {
 	}
 
 	@Test
+	public void testLinger() {
+
+		final ZmqContext ctx = Zmq.getContext(1);
+		final ZmqSocket s = ctx.getSocket(ZmqSocket.Type.ZMQ_PUB);
+		s.setLinger(0);
+		s.connect("tcp://localhost:44444");
+
+		s.close();
+
+		ctx.term();
+
+	}
+
+	@Test
 	public void testSocket() {
 
 		final ZmqContext ctx = Zmq.getContext(1);
 
 		final byte[] id1 = UUID.randomUUID().toString().getBytes();
 
-		final ZmqSocket s = ctx.socket(ZmqSocket.Type.ZMQ_PULL);
+		final ZmqSocket s = ctx.getSocket(ZmqSocket.Type.ZMQ_PUB);
 		s.setIdentity(id1);
 		s.connect("tcp://localhost:44444");
 		final byte[] id2 = s.getIdentity();
-		Assert.assertEquals(ZmqSocket.Type.ZMQ_PULL, s.getType());
-		s.close();
+		Assert.assertEquals(ZmqSocket.Type.ZMQ_PUB, s.getType());
 
+		s.send("hello world".getBytes());
+
+		s.setLinger(0);
+		s.close();
 		ctx.term();
 
 		Assert.assertEquals(id1.length, id2.length);
