@@ -123,6 +123,10 @@ public class ZmqSocket {
 		check(zmqlib.zmq_connect(this.handle, address));
 	}
 
+	public long getAffinity() {
+		return getSocketOptionLong(Option.ZMQ_AFFINITY);
+	}
+
 	public byte[] getIdentity() {
 		return getSocketOptionByteArray(Option.ZMQ_IDENTITY, 1024);
 	}
@@ -153,6 +157,10 @@ public class ZmqSocket {
 		check(zmqlib.zmq_send(this.handle, msg, flags));
 		check(zmqlib.zmq_msg_close(msg));
 
+	}
+
+	public void setAffinity(final long value) {
+		setSocketOption(Option.ZMQ_AFFINITY, value);
 	}
 
 	/**
