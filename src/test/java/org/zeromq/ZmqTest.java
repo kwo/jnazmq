@@ -2,6 +2,9 @@ package org.zeromq;
 
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import junit.framework.Assert;
 
@@ -15,6 +18,96 @@ public class ZmqTest {
 		final ZmqContext ctx = Zmq.getContext(1);
 		Assert.assertNotNull(ctx);
 		ctx.term();
+
+	}
+
+	@Test
+	public void testSendRecv() throws Exception {
+
+		final byte[] filter = "hello".getBytes();
+		final byte[] contents = "hello, world!".getBytes();
+		final String addr = "tcp://127.0.0.1:44444";
+
+		final ExecutorService executor = Executors.newCachedThreadPool();
+		final CountDownLatch ready = new CountDownLatch(1);
+		final CountDownLatch messages = new CountDownLatch(3);
+		final CountDownLatch clean = new CountDownLatch(2);
+
+		final Runnable publisher = new Runnable() {
+
+			@Override
+			public void run() {
+
+				final ZmqContext ctx = Zmq.getContext(1);
+				final ZmqSocket socket = ctx.getSocket(ZmqSocket.Type.ZMQ_PUB);
+				socket.bind(addr);
+
+				try {
+					while (!Thread.currentThread().isInterrupted()) {
+						socket.send(contents);
+						System.out.printf("sent: %s%n", new String(contents));
+						Thread.sleep(50);
+					}
+				} catch (final InterruptedException e) {
+				}
+
+				socket.setLinger(0);
+				socket.close();
+				ctx.term();
+
+				clean.countDown();
+
+				System.out.println("exited publisher");
+
+			}
+
+		};
+
+		final Runnable subscriber = new Runnable() {
+
+			@Override
+			public void run() {
+
+				final ZmqContext ctx = Zmq.getContext(1);
+				final ZmqSocket socket = ctx.getSocket(ZmqSocket.Type.ZMQ_SUB);
+				socket.connect(addr);
+				socket.addSubscription(filter);
+
+				ready.countDown();
+
+				while (!Thread.currentThread().isInterrupted()) {
+					try {
+						final byte[] response = socket.recv(ZmqSocket.SendRecvOption.ZMQ_NOBLOCK);
+						Assert.assertTrue(Arrays.equals(contents, response));
+						System.out.printf("received: %s%n", new String(contents));
+						messages.countDown();
+					} catch (final ZmqException x) {
+						// catch resource not available (consequence of noblock)
+						if (x.getCode() == 35)
+							continue;
+						throw x;
+					}
+				}
+
+				socket.close();
+				ctx.term();
+				clean.countDown();
+
+				System.out.println("exited subscriber");
+
+			}
+
+		};
+
+		executor.execute(subscriber);
+		System.out.println("waiting for ready...");
+		ready.await();
+		executor.execute(publisher);
+		System.out.println("waiting for messages...");
+		messages.await();
+		executor.shutdownNow();
+		System.out.println("waiting for cleanup...");
+		clean.await();
 
 	}
 
@@ -35,8 +128,6 @@ public class ZmqTest {
 		Assert.assertTrue(Arrays.equals(id, s.getIdentity()));
 		Assert.assertEquals(2000, s.getLinger());
 		Assert.assertEquals(1, s.getAffinity());
-
-		s.send("hello world".getBytes());
 
 		s.setLinger(0);
 		s.close();

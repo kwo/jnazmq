@@ -115,6 +115,14 @@ public class ZmqSocket {
 		this.handle = zmqlib.zmq_socket(ctx.getHandle(), type.code);
 	}
 
+	public void addSubscription(final byte[] filter) {
+		setOption(Option.ZMQ_SUBSCRIBE, filter);
+	}
+
+	public void bind(final String address) {
+		check(zmqlib.zmq_bind(this.handle, address));
+	}
+
 	public void close() {
 		check(zmqlib.zmq_close(this.handle));
 	}
@@ -124,33 +132,55 @@ public class ZmqSocket {
 	}
 
 	public long getAffinity() {
-		return getSocketOptionLong(Option.ZMQ_AFFINITY);
+		return getOptionLong(Option.ZMQ_AFFINITY);
 	}
 
 	public byte[] getIdentity() {
-		return getSocketOptionByteArray(Option.ZMQ_IDENTITY, 1024);
+		return getOptionByteArray(Option.ZMQ_IDENTITY, 1024);
 	}
 
 	public int getLinger() {
-		return getSocketOptionInt(Option.ZMQ_LINGER);
+		return getOptionInt(Option.ZMQ_LINGER);
 	}
 
 	public ZmqSocket.Type getType() {
-		return Type.findByCode((int) getSocketOptionLong(Option.ZMQ_TYPE));
+		return Type.findByCode((int) getOptionLong(Option.ZMQ_TYPE));
 	}
 
 	public byte[] recv(final SendRecvOption... opts) {
-		return null;
-	}
-
-	public void send(final byte[] data, final SendRecvOption... opts) {
-
-		final Memory m = new Memory(data.length);
-		m.write(0, data, 0, data.length);
 
 		int flags = 0;
 		for (final SendRecvOption opt : opts)
 			flags += opt.code;
+
+		final zmq_msg_t msg = new zmq_msg_t();
+		check(zmqlib.zmq_msg_init(msg));
+		check(zmqlib.zmq_recv(this.handle, msg, flags));
+
+		final int size = zmqlib.zmq_msg_size(msg).intValue();
+		final Pointer buffer = zmqlib.zmq_msg_data(msg);
+
+		final byte[] data = new byte[size];
+		buffer.read(0, data, 0, size);
+
+		check(zmqlib.zmq_msg_close(msg));
+
+		return data;
+
+	}
+
+	public void removeSubscription(final byte[] filter) {
+		setOption(Option.ZMQ_UNSUBSCRIBE, filter);
+	}
+
+	public void send(final byte[] data, final SendRecvOption... opts) {
+
+		int flags = 0;
+		for (final SendRecvOption opt : opts)
+			flags += opt.code;
+
+		final Memory m = new Memory(data.length);
+		m.write(0, data, 0, data.length);
 
 		final zmq_msg_t msg = new zmq_msg_t();
 		check(zmqlib.zmq_msg_init_data(msg, m, new NativeLong(data.length), null, null));
@@ -160,7 +190,7 @@ public class ZmqSocket {
 	}
 
 	public void setAffinity(final long value) {
-		setSocketOption(Option.ZMQ_AFFINITY, value);
+		setOption(Option.ZMQ_AFFINITY, value);
 	}
 
 	/**
@@ -172,11 +202,11 @@ public class ZmqSocket {
 	public void setIdentity(final byte[] id) {
 		if (id == null || id.length == 0 || id.length > 255)
 			throw new IllegalArgumentException();
-		setSocketOption(Option.ZMQ_IDENTITY, id);
+		setOption(Option.ZMQ_IDENTITY, id);
 	}
 
 	public void setLinger(final int value) {
-		setSocketOption(Option.ZMQ_LINGER, value);
+		setOption(Option.ZMQ_LINGER, value);
 	}
 
 	private void check(final int rc) {
@@ -186,7 +216,7 @@ public class ZmqSocket {
 		}
 	}
 
-	private byte[] getSocketOptionByteArray(final Option opt, final int capacity) {
+	private byte[] getOptionByteArray(final Option opt, final int capacity) {
 		final Memory data = new Memory(capacity);
 		data.clear(capacity);
 		final LongByReference size = new LongByReference(capacity);
@@ -194,7 +224,7 @@ public class ZmqSocket {
 		return data.getByteArray(0, (int) size.getValue());
 	}
 
-	private int getSocketOptionInt(final Option opt) {
+	private int getOptionInt(final Option opt) {
 		final int capacity = 4;
 		final Memory data = new Memory(capacity);
 		data.clear(capacity);
@@ -203,7 +233,7 @@ public class ZmqSocket {
 		return data.getInt(0);
 	}
 
-	private long getSocketOptionLong(final Option opt) {
+	private long getOptionLong(final Option opt) {
 		final int capacity = 8;
 		final Memory data = new Memory(capacity);
 		data.clear(capacity);
@@ -212,19 +242,19 @@ public class ZmqSocket {
 		return data.getLong(0);
 	}
 
-	private void setSocketOption(final Option opt, final byte[] value) {
+	private void setOption(final Option opt, final byte[] value) {
 		final Memory data = new Memory(value.length);
 		data.write(0, value, 0, value.length);
 		check(zmqlib.zmq_setsockopt(this.handle, opt.code, data, new NativeLong(data.getSize())));
 	}
 
-	private void setSocketOption(final Option opt, final int value) {
+	private void setOption(final Option opt, final int value) {
 		final Memory data = new Memory(4);
 		data.setInt(0, value);
 		check(zmqlib.zmq_setsockopt(this.handle, opt.code, data, new NativeLong(data.getSize())));
 	}
 
-	private void setSocketOption(final Option opt, final long value) {
+	private void setOption(final Option opt, final long value) {
 		final Memory data = new Memory(8);
 		data.setLong(0, value);
 		check(zmqlib.zmq_setsockopt(this.handle, opt.code, data, new NativeLong(data.getSize())));
