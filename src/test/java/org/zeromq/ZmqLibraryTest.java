@@ -10,23 +10,23 @@ import com.sun.jna.Pointer;
 
 public class ZmqLibraryTest {
 
-	private static ZmqLibrary zmq = null;
+	private static ZmqLibrary zmqlib = null;
 
 	@BeforeClass
 	public static void setup() {
-		zmq = (ZmqLibrary) Native.loadLibrary("zmq", ZmqLibrary.class);
+		zmqlib = (ZmqLibrary) Native.loadLibrary("zmq", ZmqLibrary.class);
 	}
 
 	@AfterClass
 	public static void teardown() {
-		zmq = null;
+		zmqlib = null;
 	}
 
 	@Test
 	public void testContext() {
-		final Pointer ctx = zmq.zmq_init(1);
+		final Pointer ctx = zmqlib.zmq_init(1);
 		Assert.assertNotNull(ctx);
-		zmq.zmq_term(ctx);
+		zmqlib.zmq_term(ctx);
 	}
 
 	@Test
@@ -34,26 +34,26 @@ public class ZmqLibraryTest {
 
 		int rc = 0;
 
-		final Pointer ctx = zmq.zmq_init(1);
+		final Pointer ctx = zmqlib.zmq_init(1);
 		Assert.assertNotNull(ctx);
 
-		final Pointer s = zmq.zmq_socket(ctx, ZmqLibrary.ZMQ_PULL);
+		final Pointer s = zmqlib.zmq_socket(ctx, ZmqLibrary.ZMQ_PULL);
 		Assert.assertNotNull(s);
-		rc = zmq.zmq_close(s);
+		rc = zmqlib.zmq_close(s);
 		Assert.assertEquals(0, rc);
 
-		rc = zmq.zmq_term(ctx);
+		rc = zmqlib.zmq_term(ctx);
 		Assert.assertEquals(0, rc);
 
 	}
 
 	@Test
 	public void testVersion() {
-		Assert.assertNotNull(zmq);
+		Assert.assertNotNull(zmqlib);
 		final int[] major = new int[1];
 		final int[] minor = new int[1];
 		final int[] patch = new int[1];
-		zmq.zmq_version(major, minor, patch);
+		zmqlib.zmq_version(major, minor, patch);
 		Assert.assertEquals(2, major[0]);
 		Assert.assertEquals(1, minor[0]);
 		Assert.assertTrue(patch[0] >= 0);
