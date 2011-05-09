@@ -149,6 +149,8 @@ public class ZmqTest {
 
 		Assert.assertTrue(Zmq.VERSION > Zmq.make_version(2, 1, 0));
 
+		System.out.printf("ZMQ version: %s%n", Zmq.VERSION);
+
 	}
 
 }
