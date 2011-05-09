@@ -145,9 +145,9 @@ public class ZmqTest {
 		Assert.assertEquals(3, version.length);
 		Assert.assertEquals(2, version[0]);
 		Assert.assertEquals(1, version[1]);
-		Assert.assertEquals(6, version[2]);
+		Assert.assertTrue(version[2] >= 0);
 
-		Assert.assertEquals(Zmq.VERSION, Zmq.make_version(2, 1, 6));
+		Assert.assertTrue(Zmq.VERSION > Zmq.make_version(2, 1, 0));
 
 	}
 
