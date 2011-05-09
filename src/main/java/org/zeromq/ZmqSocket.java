@@ -11,26 +11,26 @@ public class ZmqSocket {
 
 	public static enum Option {
 
-		ZMQ_AFFINITY(ZmqLibrary.ZMQ_AFFINITY),
-		ZMQ_BACKLOG(ZmqLibrary.ZMQ_BACKLOG),
-		ZMQ_EVENTS(ZmqLibrary.ZMQ_EVENTS),
-		ZMQ_FD(ZmqLibrary.ZMQ_FD),
-		ZMQ_HWM(ZmqLibrary.ZMQ_HWM),
-		ZMQ_IDENTITY(ZmqLibrary.ZMQ_IDENTITY),
-		ZMQ_LINGER(ZmqLibrary.ZMQ_LINGER),
-		ZMQ_MCAST_LOOP(ZmqLibrary.ZMQ_MCAST_LOOP),
-		ZMQ_RATE(ZmqLibrary.ZMQ_RATE),
-		ZMQ_RCVBUF(ZmqLibrary.ZMQ_RCVBUF),
-		ZMQ_RCVMORE(ZmqLibrary.ZMQ_RCVMORE),
-		ZMQ_RECONNECT_IVL(ZmqLibrary.ZMQ_RECONNECT_IVL),
-		ZMQ_RECONNECT_IVL_MAX(ZmqLibrary.ZMQ_RECONNECT_IVL_MAX),
-		ZMQ_RECOVERY_IVL(ZmqLibrary.ZMQ_RECOVERY_IVL),
-		ZMQ_RECOVERY_IVL_MSEC(ZmqLibrary.ZMQ_RECOVERY_IVL_MSEC),
-		ZMQ_SNDBUF(ZmqLibrary.ZMQ_SNDBUF),
-		ZMQ_SUBSCRIBE(ZmqLibrary.ZMQ_SUBSCRIBE),
-		ZMQ_SWAP(ZmqLibrary.ZMQ_SWAP),
-		ZMQ_TYPE(ZmqLibrary.ZMQ_TYPE),
-		ZMQ_UNSUBSCRIBE(ZmqLibrary.ZMQ_UNSUBSCRIBE);
+		AFFINITY(ZmqLibrary.ZMQ_AFFINITY),
+		BACKLOG(ZmqLibrary.ZMQ_BACKLOG),
+		EVENTS(ZmqLibrary.ZMQ_EVENTS),
+		FD(ZmqLibrary.ZMQ_FD),
+		HWM(ZmqLibrary.ZMQ_HWM),
+		IDENTITY(ZmqLibrary.ZMQ_IDENTITY),
+		LINGER(ZmqLibrary.ZMQ_LINGER),
+		MCAST_LOOP(ZmqLibrary.ZMQ_MCAST_LOOP),
+		RATE(ZmqLibrary.ZMQ_RATE),
+		RCVBUF(ZmqLibrary.ZMQ_RCVBUF),
+		RCVMORE(ZmqLibrary.ZMQ_RCVMORE),
+		RECONNECT_IVL(ZmqLibrary.ZMQ_RECONNECT_IVL),
+		RECONNECT_IVL_MAX(ZmqLibrary.ZMQ_RECONNECT_IVL_MAX),
+		RECOVERY_IVL(ZmqLibrary.ZMQ_RECOVERY_IVL),
+		RECOVERY_IVL_MSEC(ZmqLibrary.ZMQ_RECOVERY_IVL_MSEC),
+		SNDBUF(ZmqLibrary.ZMQ_SNDBUF),
+		SUBSCRIBE(ZmqLibrary.ZMQ_SUBSCRIBE),
+		SWAP(ZmqLibrary.ZMQ_SWAP),
+		TYPE(ZmqLibrary.ZMQ_TYPE),
+		UNSUBSCRIBE(ZmqLibrary.ZMQ_UNSUBSCRIBE);
 
 		public static Option findByCode(final int code) {
 			for (final Option x : values())
@@ -49,8 +49,8 @@ public class ZmqSocket {
 
 	public static enum SendRecvOption {
 
-		ZMQ_NOBLOCK(ZmqLibrary.ZMQ_NOBLOCK),
-		ZMQ_SNDMORE(ZmqLibrary.ZMQ_SNDMORE);
+		NOBLOCK(ZmqLibrary.ZMQ_NOBLOCK),
+		SNDMORE(ZmqLibrary.ZMQ_SNDMORE);
 
 		public static SendRecvOption findByCode(final int code) {
 			for (final SendRecvOption x : values())
@@ -69,25 +69,25 @@ public class ZmqSocket {
 
 	public static enum Type {
 
+		DEALER(ZmqLibrary.ZMQ_DEALER),
 		@Deprecated
 		DOWNSTREAM(ZmqLibrary.ZMQ_PUSH),
-		ZMQ_DEALER(ZmqLibrary.ZMQ_DEALER),
-		ZMQ_PAIR(ZmqLibrary.ZMQ_PAIR),
-		ZMQ_PUB(ZmqLibrary.ZMQ_PUB),
-		ZMQ_PULL(ZmqLibrary.ZMQ_PULL),
-		ZMQ_PUSH(ZmqLibrary.ZMQ_PUSH),
-		ZMQ_REP(ZmqLibrary.ZMQ_REP),
-		ZMQ_REQ(ZmqLibrary.ZMQ_REQ),
-		ZMQ_ROUTER(ZmqLibrary.ZMQ_ROUTER),
-		ZMQ_SUB(ZmqLibrary.ZMQ_SUB),
+		PAIR(ZmqLibrary.ZMQ_PAIR),
+		PUB(ZmqLibrary.ZMQ_PUB),
+		PULL(ZmqLibrary.ZMQ_PULL),
+		PUSH(ZmqLibrary.ZMQ_PUSH),
+		REP(ZmqLibrary.ZMQ_REP),
+		REQ(ZmqLibrary.ZMQ_REQ),
+		ROUTER(ZmqLibrary.ZMQ_ROUTER),
+		SUB(ZmqLibrary.ZMQ_SUB),
 		@Deprecated
-		ZMQ_UPSTREAM(ZmqLibrary.ZMQ_PULL),
-		ZMQ_XPUB(ZmqLibrary.ZMQ_XPUB),
+		UPSTREAM(ZmqLibrary.ZMQ_PULL),
+		XPUB(ZmqLibrary.ZMQ_XPUB),
 		@Deprecated
-		ZMQ_XREP(ZmqLibrary.ZMQ_ROUTER),
+		XREP(ZmqLibrary.ZMQ_ROUTER),
 		@Deprecated
-		ZMQ_XREQ(ZmqLibrary.ZMQ_DEALER),
-		ZMQ_XSUB(ZmqLibrary.ZMQ_XSUB);
+		XREQ(ZmqLibrary.ZMQ_DEALER),
+		XSUB(ZmqLibrary.ZMQ_XSUB);
 
 		public static Type findByCode(final int code) {
 			for (final Type x : values())
@@ -116,7 +116,7 @@ public class ZmqSocket {
 	}
 
 	public void addSubscription(final byte[] filter) {
-		setOption(Option.ZMQ_SUBSCRIBE, filter);
+		setOption(Option.SUBSCRIBE, filter);
 	}
 
 	public void bind(final String address) {
@@ -132,19 +132,19 @@ public class ZmqSocket {
 	}
 
 	public long getAffinity() {
-		return getOptionLong(Option.ZMQ_AFFINITY);
+		return getOptionLong(Option.AFFINITY);
 	}
 
 	public byte[] getIdentity() {
-		return getOptionByteArray(Option.ZMQ_IDENTITY, 1024);
+		return getOptionByteArray(Option.IDENTITY, 1024);
 	}
 
 	public int getLinger() {
-		return getOptionInt(Option.ZMQ_LINGER);
+		return getOptionInt(Option.LINGER);
 	}
 
 	public ZmqSocket.Type getType() {
-		return Type.findByCode((int) getOptionLong(Option.ZMQ_TYPE));
+		return Type.findByCode((int) getOptionLong(Option.TYPE));
 	}
 
 	public byte[] recv(final SendRecvOption... opts) {
@@ -174,7 +174,7 @@ public class ZmqSocket {
 	}
 
 	public void removeSubscription(final byte[] filter) {
-		setOption(Option.ZMQ_UNSUBSCRIBE, filter);
+		setOption(Option.UNSUBSCRIBE, filter);
 	}
 
 	public void send(final byte[] data, final SendRecvOption... opts) {
@@ -197,7 +197,7 @@ public class ZmqSocket {
 	}
 
 	public void setAffinity(final long value) {
-		setOption(Option.ZMQ_AFFINITY, value);
+		setOption(Option.AFFINITY, value);
 	}
 
 	/**
@@ -209,11 +209,11 @@ public class ZmqSocket {
 	public void setIdentity(final byte[] id) {
 		if (id == null || id.length == 0 || id.length > 255)
 			throw new IllegalArgumentException();
-		setOption(Option.ZMQ_IDENTITY, id);
+		setOption(Option.IDENTITY, id);
 	}
 
 	public void setLinger(final int value) {
-		setOption(Option.ZMQ_LINGER, value);
+		setOption(Option.LINGER, value);
 	}
 
 	private void check(final int rc) {

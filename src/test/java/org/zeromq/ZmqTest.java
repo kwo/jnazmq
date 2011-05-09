@@ -9,6 +9,8 @@ import java.util.concurrent.Executors;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.zeromq.ZmqSocket.SendRecvOption;
+import org.zeromq.ZmqSocket.Type;
 
 public class ZmqTest {
 
@@ -39,7 +41,7 @@ public class ZmqTest {
 			public void run() {
 
 				final ZmqContext ctx = Zmq.getContext(1);
-				final ZmqSocket socket = ctx.getSocket(ZmqSocket.Type.ZMQ_PUB);
+				final ZmqSocket socket = ctx.getSocket(Type.PUB);
 				socket.bind(addr);
 
 				try {
@@ -69,7 +71,7 @@ public class ZmqTest {
 			public void run() {
 
 				final ZmqContext ctx = Zmq.getContext(1);
-				final ZmqSocket socket = ctx.getSocket(ZmqSocket.Type.ZMQ_SUB);
+				final ZmqSocket socket = ctx.getSocket(Type.SUB);
 				socket.connect(addr);
 				socket.addSubscription(filter);
 
@@ -77,7 +79,7 @@ public class ZmqTest {
 
 				while (!Thread.currentThread().isInterrupted()) {
 					try {
-						final byte[] response = socket.recv(ZmqSocket.SendRecvOption.ZMQ_NOBLOCK);
+						final byte[] response = socket.recv(SendRecvOption.NOBLOCK);
 						Assert.assertTrue(Arrays.equals(contents, response));
 						System.out.printf("received: %s%n", new String(contents));
 						messages.countDown();
@@ -115,7 +117,7 @@ public class ZmqTest {
 	public void testSocket() {
 
 		final ZmqContext ctx = Zmq.getContext(1);
-		final ZmqSocket s = ctx.getSocket(ZmqSocket.Type.ZMQ_PUB);
+		final ZmqSocket s = ctx.getSocket(Type.PUB);
 
 		final byte[] id = UUID.randomUUID().toString().getBytes();
 		s.setAffinity(1);
@@ -124,7 +126,7 @@ public class ZmqTest {
 
 		s.connect("tcp://localhost:44444");
 
-		Assert.assertEquals(ZmqSocket.Type.ZMQ_PUB, s.getType());
+		Assert.assertEquals(Type.PUB, s.getType());
 		Assert.assertTrue(Arrays.equals(id, s.getIdentity()));
 		Assert.assertEquals(2000, s.getLinger());
 		Assert.assertEquals(1, s.getAffinity());
