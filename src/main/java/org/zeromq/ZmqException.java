@@ -44,4 +44,15 @@ public class ZmqException extends RuntimeException {
 		return this.code;
 	}
 
+	@Override
+	public String toString() {
+		final StringBuilder b = new StringBuilder();
+		b.append(getClass().getSimpleName());
+		b.append(" (");
+		b.append(getCode());
+		b.append(") ");
+		b.append(getMessage());
+		return b.toString();
+	}
+
 }
