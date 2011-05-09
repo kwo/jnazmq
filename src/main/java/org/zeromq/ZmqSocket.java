@@ -116,6 +116,7 @@ public class ZmqSocket {
 	}
 
 	public void addSubscription(final byte[] filter) {
+		// TODO: allow for zero-length subscription
 		setOption(Option.SUBSCRIBE, filter);
 	}
 
