@@ -154,18 +154,22 @@ public class ZmqSocket {
 			flags += opt.code;
 
 		final zmq_msg_t msg = new zmq_msg_t();
-		check(zmqlib.zmq_msg_init(msg));
-		check(zmqlib.zmq_recv(this.handle, msg, flags));
 
-		final int size = zmqlib.zmq_msg_size(msg).intValue();
-		final Pointer buffer = zmqlib.zmq_msg_data(msg);
+		try {
 
-		final byte[] data = new byte[size];
-		buffer.read(0, data, 0, size);
+			check(zmqlib.zmq_msg_init(msg));
+			check(zmqlib.zmq_recv(this.handle, msg, flags));
 
-		check(zmqlib.zmq_msg_close(msg));
+			final int size = zmqlib.zmq_msg_size(msg).intValue();
+			final Pointer buffer = zmqlib.zmq_msg_data(msg);
 
-		return data;
+			final byte[] data = new byte[size];
+			buffer.read(0, data, 0, size);
+			return data;
+
+		} finally {
+			check(zmqlib.zmq_msg_close(msg));
+		}
 
 	}
 
@@ -183,9 +187,12 @@ public class ZmqSocket {
 		m.write(0, data, 0, data.length);
 
 		final zmq_msg_t msg = new zmq_msg_t();
-		check(zmqlib.zmq_msg_init_data(msg, m, new NativeLong(data.length), null, null));
-		check(zmqlib.zmq_send(this.handle, msg, flags));
-		check(zmqlib.zmq_msg_close(msg));
+		try {
+			check(zmqlib.zmq_msg_init_data(msg, m, new NativeLong(data.length), null, null));
+			check(zmqlib.zmq_send(this.handle, msg, flags));
+		} finally {
+			check(zmqlib.zmq_msg_close(msg));
+		}
 
 	}
 
