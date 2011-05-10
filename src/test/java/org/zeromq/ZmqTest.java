@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.zeromq.ZmqSocket.SendRecvOption;
+import org.zeromq.ZmqSocket.RecvFlag;
 import org.zeromq.ZmqSocket.Type;
 
 public class ZmqTest {
@@ -79,7 +79,7 @@ public class ZmqTest {
 
 				while (!Thread.currentThread().isInterrupted()) {
 					try {
-						final byte[] response = socket.recv(SendRecvOption.NOBLOCK);
+						final byte[] response = socket.recv(RecvFlag.NOBLOCK);
 						Assert.assertTrue(Arrays.equals(contents, response));
 						System.out.printf("received: %s%n", new String(contents));
 						messages.countDown();
