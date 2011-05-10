@@ -16,6 +16,10 @@ public class Zmq {
 		}
 	}
 
+	static {
+
+	}
+
 	public static ZmqContext getContext(final int ioThreads) {
 		return new ZmqContext(ioThreads);
 	}
@@ -32,7 +36,7 @@ public class Zmq {
 		final int[] major = new int[1];
 		final int[] minor = new int[1];
 		final int[] patch = new int[1];
-		getLibrary().zmq_version(major, minor, patch);
+		ZmqLibrary.zmq_version(major, minor, patch);
 		return new int[] { major[0], minor[0], patch[0] };
 	}
 

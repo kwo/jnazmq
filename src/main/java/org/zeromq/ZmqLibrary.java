@@ -20,7 +20,7 @@
 
 package org.zeromq;
 
-import com.sun.jna.Library;
+import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
@@ -30,7 +30,7 @@ import com.sun.jna.ptr.LongByReference;
 
 /**
  * 
- * ZeroMQ JNA library interface, taken directly from zmq.h.
+ * ZeroMQ JNA direct mapping, taken directly from zmq.h.
  * 
  * Special thanks to Tim Clark whose <a href="http://www.lshift.net/blog/2010/10/30/jna-wrapper-for-zmq">blog post</a>
  * provided the catalyst for this wrapper.
@@ -38,14 +38,39 @@ import com.sun.jna.ptr.LongByReference;
  * @author Karl Ostendorf <karl@ostendorf.com>
  *
  */
-public interface ZmqLibrary extends Library {
+public class ZmqLibrary {
+
+	static {
+		Native.register("zmq");
+	}
 
 	/******************************************************************************/
 	/*  0MQ versioning support.                                                   */
 	/******************************************************************************/
 
+	/*  Version macros for compile-time API version detection                     */
+	public static final int ZMQ_VERSION_MAJOR;
+	public static final int ZMQ_VERSION_MINOR;
+	public static final int ZMQ_VERSION_PATCH;
+	public static final int ZMQ_VERSION;
+
+	public static int ZMQ_MAKE_VERSION(final int major, final int minor, final int patch) {
+		return (major * 10000) + (minor * 100) + patch;
+	}
+
 	/*  Run-time API version detection                                            */
-	void zmq_version(int[] major, int[] minor, int[] patch);
+	public static native void zmq_version(int[] major, int[] minor, int[] patch);
+
+	static {
+		final int[] major = new int[1];
+		final int[] minor = new int[1];
+		final int[] patch = new int[1];
+		zmq_version(major, minor, patch);
+		ZMQ_VERSION_MAJOR = major[0];
+		ZMQ_VERSION_MINOR = minor[0];
+		ZMQ_VERSION_PATCH = patch[0];
+		ZMQ_VERSION = ZMQ_MAKE_VERSION(ZMQ_VERSION_MAJOR, ZMQ_VERSION_MINOR, ZMQ_VERSION_PATCH);
+	}
 
 	/******************************************************************************/
 	/*  0MQ errors.                                                               */
@@ -75,10 +100,10 @@ public interface ZmqLibrary extends Library {
 	/*  of this function is to make the code 100% portable, including where 0MQ   */
 	/*  compiled with certain CRT library (on Windows) is linked to an            */
 	/*  application that uses different CRT library.                              */
-	int zmq_errno ();
+	public static native int zmq_errno ();
 
 	/*  Resolves system errors and 0MQ errors to human-readable string.           */
-	String zmq_strerror (int errnum);
+	public static native String zmq_strerror (int errnum);
 
 	/******************************************************************************/
 	/*  0MQ message definition.                                                   */
@@ -124,21 +149,21 @@ public interface ZmqLibrary extends Library {
 		}
 	}
 
-	int zmq_msg_init (zmq_msg_t msg);
-	int zmq_msg_init_size (zmq_msg_t msg, NativeLong size);
-	int zmq_msg_init_data (zmq_msg_t msg, Pointer data, NativeLong size, zmq_free_fn ffn, Pointer hint);
-	int zmq_msg_close (zmq_msg_t msg);
-	int zmq_msg_move (zmq_msg_t dest, zmq_msg_t src);
-	int zmq_msg_copy (zmq_msg_t dest, zmq_msg_t src);
-	Pointer zmq_msg_data (zmq_msg_t msg);
-	NativeLong zmq_msg_size (zmq_msg_t msg);
+	public static native int zmq_msg_init (zmq_msg_t msg);
+	public static native int zmq_msg_init_size (zmq_msg_t msg, NativeLong size);
+	public static native int zmq_msg_init_data (zmq_msg_t msg, Pointer data, NativeLong size, zmq_free_fn ffn, Pointer hint);
+	public static native int zmq_msg_close (zmq_msg_t msg);
+	public static native int zmq_msg_move (zmq_msg_t dest, zmq_msg_t src);
+	public static native int zmq_msg_copy (zmq_msg_t dest, zmq_msg_t src);
+	public static native Pointer zmq_msg_data (zmq_msg_t msg);
+	public static native NativeLong zmq_msg_size (zmq_msg_t msg);
 
 	/******************************************************************************/
 	/*  0MQ infrastructure (a.k.a. context) initialisation & termination.         */
 	/******************************************************************************/
 
-	Pointer zmq_init (int io_threads);
-	int zmq_term (Pointer context);
+	public static native Pointer zmq_init (int io_threads);
+	public static native int zmq_term (Pointer context);
 
 	/******************************************************************************/
 	/*  0MQ socket definition.                                                    */
@@ -187,14 +212,14 @@ public interface ZmqLibrary extends Library {
 	public static final int ZMQ_NOBLOCK = 1;
 	public static final int ZMQ_SNDMORE = 2;
 
-	Pointer zmq_socket (Pointer context, int type);
-	int zmq_close (Pointer s);
-	int zmq_setsockopt (Pointer s, int option, Pointer optval, NativeLong optvallen);
-	int zmq_getsockopt (Pointer s, int option, Pointer optval, LongByReference optvallen);
-	int zmq_bind (Pointer s, String addr);
-	int zmq_connect (Pointer s, String addr);
-	int zmq_send (Pointer s, zmq_msg_t msg, int flags);
-	int zmq_recv (Pointer s, zmq_msg_t msg, int flags);
+	public static native Pointer zmq_socket (Pointer context, int type);
+	public static native int zmq_close (Pointer s);
+	public static native int zmq_setsockopt (Pointer s, int option, Pointer optval, NativeLong optvallen);
+	public static native int zmq_getsockopt (Pointer s, int option, Pointer optval, LongByReference optvallen);
+	public static native int zmq_bind (Pointer s, String addr);
+	public static native int zmq_connect (Pointer s, String addr);
+	public static native int zmq_send (Pointer s, zmq_msg_t msg, int flags);
+	public static native int zmq_recv (Pointer s, zmq_msg_t msg, int flags);
 
 	/******************************************************************************/
 	/*  I/O multiplexing.                                                         */
@@ -211,7 +236,7 @@ public interface ZmqLibrary extends Library {
 		short revents;
 	}
 
-	int zmq_poll (zmq_pollitem_t items, int nitems, long timeout);
+	public static native int zmq_poll (zmq_pollitem_t items, int nitems, long timeout);
 
 	/******************************************************************************/
 	/*  Built-in devices                                                          */
@@ -221,6 +246,8 @@ public interface ZmqLibrary extends Library {
 	public static final int ZMQ_FORWARDER = 2;
 	public static final int ZMQ_QUEUE = 3;
 
-	int zmq_device (int device, Pointer insocket, Pointer outsocket);
+	public static native int zmq_device (int device, Pointer insocket, Pointer outsocket);
+
+	private ZmqLibrary() {}
 
 }
