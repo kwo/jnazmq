@@ -248,6 +248,6 @@ public class Zmq {
 
 	public static native int zmq_device (int device, Pointer insocket, Pointer outsocket);
 
-	private ZmqLibrary() {}
+	private Zmq() {}
 
 }

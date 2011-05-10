@@ -17,7 +17,7 @@ public class ZmqTest {
 	@Test
 	public void testContext() {
 
-		final ZmqContext ctx = Zmq.getContext(1);
+		final ZmqContext ctx = ZmqContext.getInstance(1);
 		Assert.assertNotNull(ctx);
 		ctx.term();
 
@@ -40,7 +40,7 @@ public class ZmqTest {
 			@Override
 			public void run() {
 
-				final ZmqContext ctx = Zmq.getContext(1);
+				final ZmqContext ctx = ZmqContext.getInstance(1);
 				final ZmqSocket socket = ctx.getSocket(Type.PUB);
 				socket.bind(addr);
 
@@ -70,7 +70,7 @@ public class ZmqTest {
 			@Override
 			public void run() {
 
-				final ZmqContext ctx = Zmq.getContext(1);
+				final ZmqContext ctx = ZmqContext.getInstance(1);
 				final ZmqSocket socket = ctx.getSocket(Type.SUB);
 				socket.connect(addr);
 				socket.addSubscription(filter);
@@ -116,7 +116,7 @@ public class ZmqTest {
 	@Test
 	public void testSocket() {
 
-		final ZmqContext ctx = Zmq.getContext(1);
+		final ZmqContext ctx = ZmqContext.getInstance(1);
 		final ZmqSocket s = ctx.getSocket(Type.PUB);
 
 		final byte[] id = UUID.randomUUID().toString().getBytes();
@@ -140,16 +140,9 @@ public class ZmqTest {
 	@Test
 	public void testVerison() {
 
-		final int[] version = Zmq.version();
-		Assert.assertNotNull(version);
-		Assert.assertEquals(3, version.length);
-		Assert.assertEquals(2, version[0]);
-		Assert.assertEquals(1, version[1]);
-		Assert.assertTrue(version[2] >= 0);
+		Assert.assertTrue(Zmq.ZMQ_VERSION > Zmq.ZMQ_MAKE_VERSION(2, 1, 0));
 
-		Assert.assertTrue(Zmq.VERSION > Zmq.make_version(2, 1, 0));
-
-		System.out.printf("ZMQ version: %s%n", Zmq.VERSION);
+		System.out.printf("ZMQ version: %s%n", Zmq.ZMQ_VERSION);
 
 	}
 

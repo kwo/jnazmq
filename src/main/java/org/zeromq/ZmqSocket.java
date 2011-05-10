@@ -1,6 +1,6 @@
 package org.zeromq;
 
-import org.zeromq.ZmqLibrary.zmq_msg_t;
+import org.zeromq.Zmq.zmq_msg_t;
 
 import com.sun.jna.Memory;
 import com.sun.jna.NativeLong;
@@ -11,26 +11,26 @@ public class ZmqSocket {
 
 	public static enum Option {
 
-		AFFINITY(ZmqLibrary.ZMQ_AFFINITY),
-		BACKLOG(ZmqLibrary.ZMQ_BACKLOG),
-		EVENTS(ZmqLibrary.ZMQ_EVENTS),
-		FD(ZmqLibrary.ZMQ_FD),
-		HWM(ZmqLibrary.ZMQ_HWM),
-		IDENTITY(ZmqLibrary.ZMQ_IDENTITY),
-		LINGER(ZmqLibrary.ZMQ_LINGER),
-		MCAST_LOOP(ZmqLibrary.ZMQ_MCAST_LOOP),
-		RATE(ZmqLibrary.ZMQ_RATE),
-		RCVBUF(ZmqLibrary.ZMQ_RCVBUF),
-		RCVMORE(ZmqLibrary.ZMQ_RCVMORE),
-		RECONNECT_IVL(ZmqLibrary.ZMQ_RECONNECT_IVL),
-		RECONNECT_IVL_MAX(ZmqLibrary.ZMQ_RECONNECT_IVL_MAX),
-		RECOVERY_IVL(ZmqLibrary.ZMQ_RECOVERY_IVL),
-		RECOVERY_IVL_MSEC(ZmqLibrary.ZMQ_RECOVERY_IVL_MSEC),
-		SNDBUF(ZmqLibrary.ZMQ_SNDBUF),
-		SUBSCRIBE(ZmqLibrary.ZMQ_SUBSCRIBE),
-		SWAP(ZmqLibrary.ZMQ_SWAP),
-		TYPE(ZmqLibrary.ZMQ_TYPE),
-		UNSUBSCRIBE(ZmqLibrary.ZMQ_UNSUBSCRIBE);
+		AFFINITY(Zmq.ZMQ_AFFINITY),
+		BACKLOG(Zmq.ZMQ_BACKLOG),
+		EVENTS(Zmq.ZMQ_EVENTS),
+		FD(Zmq.ZMQ_FD),
+		HWM(Zmq.ZMQ_HWM),
+		IDENTITY(Zmq.ZMQ_IDENTITY),
+		LINGER(Zmq.ZMQ_LINGER),
+		MCAST_LOOP(Zmq.ZMQ_MCAST_LOOP),
+		RATE(Zmq.ZMQ_RATE),
+		RCVBUF(Zmq.ZMQ_RCVBUF),
+		RCVMORE(Zmq.ZMQ_RCVMORE),
+		RECONNECT_IVL(Zmq.ZMQ_RECONNECT_IVL),
+		RECONNECT_IVL_MAX(Zmq.ZMQ_RECONNECT_IVL_MAX),
+		RECOVERY_IVL(Zmq.ZMQ_RECOVERY_IVL),
+		RECOVERY_IVL_MSEC(Zmq.ZMQ_RECOVERY_IVL_MSEC),
+		SNDBUF(Zmq.ZMQ_SNDBUF),
+		SUBSCRIBE(Zmq.ZMQ_SUBSCRIBE),
+		SWAP(Zmq.ZMQ_SWAP),
+		TYPE(Zmq.ZMQ_TYPE),
+		UNSUBSCRIBE(Zmq.ZMQ_UNSUBSCRIBE);
 
 		public static Option findByCode(final int code) {
 			for (final Option x : values())
@@ -49,7 +49,7 @@ public class ZmqSocket {
 
 	public static enum RecvFlag {
 
-		NOBLOCK(ZmqLibrary.ZMQ_NOBLOCK);
+		NOBLOCK(Zmq.ZMQ_NOBLOCK);
 
 		public static RecvFlag findByCode(final int code) {
 			for (final RecvFlag x : values())
@@ -68,8 +68,8 @@ public class ZmqSocket {
 
 	public static enum SendFlag {
 
-		NOBLOCK(ZmqLibrary.ZMQ_NOBLOCK),
-		SNDMORE(ZmqLibrary.ZMQ_SNDMORE);
+		NOBLOCK(Zmq.ZMQ_NOBLOCK),
+		SNDMORE(Zmq.ZMQ_SNDMORE);
 
 		public static SendFlag findByCode(final int code) {
 			for (final SendFlag x : values())
@@ -88,25 +88,25 @@ public class ZmqSocket {
 
 	public static enum Type {
 
-		DEALER(ZmqLibrary.ZMQ_DEALER),
+		DEALER(Zmq.ZMQ_DEALER),
 		@Deprecated
-		DOWNSTREAM(ZmqLibrary.ZMQ_PUSH),
-		PAIR(ZmqLibrary.ZMQ_PAIR),
-		PUB(ZmqLibrary.ZMQ_PUB),
-		PULL(ZmqLibrary.ZMQ_PULL),
-		PUSH(ZmqLibrary.ZMQ_PUSH),
-		REP(ZmqLibrary.ZMQ_REP),
-		REQ(ZmqLibrary.ZMQ_REQ),
-		ROUTER(ZmqLibrary.ZMQ_ROUTER),
-		SUB(ZmqLibrary.ZMQ_SUB),
+		DOWNSTREAM(Zmq.ZMQ_PUSH),
+		PAIR(Zmq.ZMQ_PAIR),
+		PUB(Zmq.ZMQ_PUB),
+		PULL(Zmq.ZMQ_PULL),
+		PUSH(Zmq.ZMQ_PUSH),
+		REP(Zmq.ZMQ_REP),
+		REQ(Zmq.ZMQ_REQ),
+		ROUTER(Zmq.ZMQ_ROUTER),
+		SUB(Zmq.ZMQ_SUB),
 		@Deprecated
-		UPSTREAM(ZmqLibrary.ZMQ_PULL),
-		XPUB(ZmqLibrary.ZMQ_XPUB),
+		UPSTREAM(Zmq.ZMQ_PULL),
+		XPUB(Zmq.ZMQ_XPUB),
 		@Deprecated
-		XREP(ZmqLibrary.ZMQ_ROUTER),
+		XREP(Zmq.ZMQ_ROUTER),
 		@Deprecated
-		XREQ(ZmqLibrary.ZMQ_DEALER),
-		XSUB(ZmqLibrary.ZMQ_XSUB);
+		XREQ(Zmq.ZMQ_DEALER),
+		XSUB(Zmq.ZMQ_XSUB);
 
 		public static Type findByCode(final int code) {
 			for (final Type x : values())
@@ -123,16 +123,10 @@ public class ZmqSocket {
 
 	}
 
-	private static final ZmqLibrary zmqlib;
-
-	static {
-		zmqlib = Zmq.getLibrary();
-	}
-
 	private final Pointer handle;
 
 	ZmqSocket(final ZmqContext ctx, final ZmqSocket.Type type) {
-		this.handle = zmqlib.zmq_socket(ctx.getHandle(), type.code);
+		this.handle = Zmq.zmq_socket(ctx.getHandle(), type.code);
 	}
 
 	/**
@@ -213,7 +207,7 @@ public class ZmqSocket {
 	 * 
 	 */
 	public void bind(final String endpoint) {
-		check(zmqlib.zmq_bind(this.handle, endpoint));
+		check(Zmq.zmq_bind(this.handle, endpoint));
 	}
 
 	/**
@@ -234,7 +228,7 @@ public class ZmqSocket {
 	 * 
 	 */
 	public void close() {
-		check(zmqlib.zmq_close(this.handle));
+		check(Zmq.zmq_close(this.handle));
 	}
 
 	/**
@@ -291,7 +285,7 @@ public class ZmqSocket {
 	 * 
 	 */
 	public void connect(final String endpoint) {
-		check(zmqlib.zmq_connect(this.handle, endpoint));
+		check(Zmq.zmq_connect(this.handle, endpoint));
 	}
 
 	/**
@@ -748,18 +742,18 @@ public class ZmqSocket {
 
 		try {
 
-			check(zmqlib.zmq_msg_init(msg));
-			check(zmqlib.zmq_recv(this.handle, msg, flag));
+			check(Zmq.zmq_msg_init(msg));
+			check(Zmq.zmq_recv(this.handle, msg, flag));
 
-			final int size = zmqlib.zmq_msg_size(msg).intValue();
-			final Pointer buffer = zmqlib.zmq_msg_data(msg);
+			final int size = Zmq.zmq_msg_size(msg).intValue();
+			final Pointer buffer = Zmq.zmq_msg_data(msg);
 
 			final byte[] data = new byte[size];
 			buffer.read(0, data, 0, size);
 			return data;
 
 		} finally {
-			check(zmqlib.zmq_msg_close(msg));
+			check(Zmq.zmq_msg_close(msg));
 		}
 
 	}
@@ -860,10 +854,10 @@ public class ZmqSocket {
 
 		final zmq_msg_t msg = new zmq_msg_t();
 		try {
-			check(zmqlib.zmq_msg_init_data(msg, m, new NativeLong(data.length), null, null));
-			check(zmqlib.zmq_send(this.handle, msg, flag));
+			check(Zmq.zmq_msg_init_data(msg, m, new NativeLong(data.length), null, null));
+			check(Zmq.zmq_send(this.handle, msg, flag));
 		} finally {
-			check(zmqlib.zmq_msg_close(msg));
+			check(Zmq.zmq_msg_close(msg));
 		}
 
 	}
@@ -1246,8 +1240,8 @@ public class ZmqSocket {
 
 	private void check(final int rc) {
 		if (rc != 0) {
-			final int err = zmqlib.zmq_errno();
-			throw new ZmqException(zmqlib.zmq_strerror(err), err);
+			final int err = Zmq.zmq_errno();
+			throw new ZmqException(Zmq.zmq_strerror(err), err);
 		}
 	}
 
@@ -1255,7 +1249,7 @@ public class ZmqSocket {
 		final Memory data = new Memory(capacity);
 		data.clear(capacity);
 		final LongByReference size = new LongByReference(capacity);
-		check(zmqlib.zmq_getsockopt(this.handle, opt.code, data, size));
+		check(Zmq.zmq_getsockopt(this.handle, opt.code, data, size));
 		return data.getByteArray(0, (int) size.getValue());
 	}
 
@@ -1264,7 +1258,7 @@ public class ZmqSocket {
 		final Memory data = new Memory(capacity);
 		data.clear(capacity);
 		final LongByReference size = new LongByReference(capacity);
-		check(zmqlib.zmq_getsockopt(this.handle, opt.code, data, size));
+		check(Zmq.zmq_getsockopt(this.handle, opt.code, data, size));
 		return data.getInt(0);
 	}
 
@@ -1273,26 +1267,26 @@ public class ZmqSocket {
 		final Memory data = new Memory(capacity);
 		data.clear(capacity);
 		final LongByReference size = new LongByReference(capacity);
-		check(zmqlib.zmq_getsockopt(this.handle, opt.code, data, size));
+		check(Zmq.zmq_getsockopt(this.handle, opt.code, data, size));
 		return data.getLong(0);
 	}
 
 	private void setOption(final Option opt, final byte[] value) {
 		final Memory data = new Memory(value.length);
 		data.write(0, value, 0, value.length);
-		check(zmqlib.zmq_setsockopt(this.handle, opt.code, data, new NativeLong(data.getSize())));
+		check(Zmq.zmq_setsockopt(this.handle, opt.code, data, new NativeLong(data.getSize())));
 	}
 
 	private void setOption(final Option opt, final int value) {
 		final Memory data = new Memory(4);
 		data.setInt(0, value);
-		check(zmqlib.zmq_setsockopt(this.handle, opt.code, data, new NativeLong(data.getSize())));
+		check(Zmq.zmq_setsockopt(this.handle, opt.code, data, new NativeLong(data.getSize())));
 	}
 
 	private void setOption(final Option opt, final long value) {
 		final Memory data = new Memory(8);
 		data.setLong(0, value);
-		check(zmqlib.zmq_setsockopt(this.handle, opt.code, data, new NativeLong(data.getSize())));
+		check(Zmq.zmq_setsockopt(this.handle, opt.code, data, new NativeLong(data.getSize())));
 	}
 
 }
