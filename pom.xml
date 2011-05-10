@@ -8,12 +8,12 @@
 	<packaging>jar</packaging>
 
 	<name>jnazmq</name>
-	<description>ZeroMQ Java JNA Bindings</description>
+	<description>Java JNA Bindings for ZeroMQ</description>
 	<url>http://zeromq.org/</url>
 
 	<licenses>
 		<license>
-			<name>Apache v2</name>
+			<name>LGPL</name>
 		</license>
 	</licenses>
 
