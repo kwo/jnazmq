@@ -47,21 +47,40 @@ public class ZmqSocket {
 
 	}
 
-	public static enum SendRecvOption {
+	public static enum RecvFlag {
 
-		NOBLOCK(ZmqLibrary.ZMQ_NOBLOCK),
-		SNDMORE(ZmqLibrary.ZMQ_SNDMORE);
+		NOBLOCK(ZmqLibrary.ZMQ_NOBLOCK);
 
-		public static SendRecvOption findByCode(final int code) {
-			for (final SendRecvOption x : values())
+		public static RecvFlag findByCode(final int code) {
+			for (final RecvFlag x : values())
 				if (code == x.code)
 					return x;
-			throw new IllegalArgumentException("Unknown " + SendRecvOption.class.getSimpleName() + ": " + code);
+			throw new IllegalArgumentException("Unknown " + RecvFlag.class.getSimpleName() + ": " + code);
 		}
 
 		public final int code;
 
-		SendRecvOption(final int code) {
+		RecvFlag(final int code) {
+			this.code = code;
+		}
+
+	}
+
+	public static enum SendFlag {
+
+		NOBLOCK(ZmqLibrary.ZMQ_NOBLOCK),
+		SNDMORE(ZmqLibrary.ZMQ_SNDMORE);
+
+		public static SendFlag findByCode(final int code) {
+			for (final SendFlag x : values())
+				if (code == x.code)
+					return x;
+			throw new IllegalArgumentException("Unknown " + SendFlag.class.getSimpleName() + ": " + code);
+		}
+
+		public final int code;
+
+		SendFlag(final int code) {
 			this.code = code;
 		}
 
@@ -147,16 +166,132 @@ public class ZmqSocket {
 		setOption(Option.SUBSCRIBE, filter);
 	}
 
-	public void bind(final String address) {
-		check(zmqlib.zmq_bind(this.handle, address));
+	/**
+	 * Accept connections on a socket. The zmq_bind() function shall create an
+	 * endpoint for accepting connections and bind it to the socket referenced
+	 * by the socket argument.
+	 * 
+	 * <br/>
+	 * <br/>
+	 * 
+	 * With the exception of ZMQ_PAIR sockets, a single socket may be connected
+	 * to multiple endpoints using zmq_connect(), while simultaneously accepting
+	 * incoming connections from multiple endpoints bound to the socket using
+	 * zmq_bind(). Refer to zmq_socket(3) for a description of the exact
+	 * semantics involved when connecting or binding a socket to multiple
+	 * endpoints.
+	 * 
+	 * @param endpoint
+	 * 
+	 *            The endpoint argument is a string consisting of two parts as
+	 *            follows: transport://address. The transport part specifies the
+	 *            underlying transport protocol to use. The meaning of the
+	 *            address part is specific to the underlying transport protocol
+	 *            selected.
+	 * 
+	 * <br/>
+	 * <br/>
+	 * 
+	 *            The following transports are defined:
+	 * 
+	 *            <ul>
+	 * 
+	 *            <li>inproc: local in-process (inter-thread) communication
+	 *            transport, see zmq_inproc(7)</li>
+	 * 
+	 *            <li>ipc: local inter-process communication transport, see
+	 *            zmq_ipc(7)</li>
+	 * 
+	 *            <li>tcp: unicast transport using TCP, see zmq_tcp(7)</li>
+	 * 
+	 *            <li>pgm, epgm: reliable multicast transport using PGM, see
+	 *            zmq_pgm(7)</li>
+	 * 
+	 *            </ul>
+	 * 
+	 * @see #connect(String)
+	 * 
+	 */
+	public void bind(final String endpoint) {
+		check(zmqlib.zmq_bind(this.handle, endpoint));
 	}
 
+	/**
+	 * Close a socket. The zmq_close() function shall destroy the socket
+	 * referenced by the socket argument. Any outstanding messages physically
+	 * received from the network but not yet received by the application with
+	 * zmq_recv() shall be discarded. The behaviour for discarding messages sent
+	 * by the application with zmq_send() but not yet physically transferred to
+	 * the network depends on the value of the ZMQ_LINGER socket option for the
+	 * specified socket.
+	 * 
+	 * <br/>
+	 * <br/>
+	 * 
+	 * Note. The default setting of ZMQ_LINGER does not discard unsent messages;
+	 * this behaviour may cause the application to block when calling
+	 * zmq_term(). For details refer to zmq_setsockopt(3) and zmq_term(3).
+	 * 
+	 */
 	public void close() {
 		check(zmqlib.zmq_close(this.handle));
 	}
 
-	public void connect(final String address) {
-		check(zmqlib.zmq_connect(this.handle, address));
+	/**
+	 * Connect a socket. The zmq_connect() function shall connect the socket
+	 * referenced by the socket argument to the endpoint specified by the
+	 * endpoint argument.
+	 * 
+	 * <br/>
+	 * <br/>
+	 * 
+	 * With the exception of ZMQ_PAIR sockets, a single socket may be connected
+	 * to multiple endpoints using zmq_connect(), while simultaneously accepting
+	 * incoming connections from multiple endpoints bound to the socket using
+	 * zmq_bind(). Refer to zmq_socket(3) for a description of the exact
+	 * semantics involved when connecting or binding a socket to multiple
+	 * endpoints.
+	 * 
+	 * <br/>
+	 * <br/>
+	 * 
+	 * Note. The connection will not be performed immediately but as needed by
+	 * 0MQ. Thus a successful invocation of zmq_connect() does not indicate that
+	 * a physical connection was or can actually be established.
+	 * 
+	 * @param endpoint
+	 * 
+	 *            The endpoint argument is a string consisting of two parts as
+	 *            follows: transport://address. The transport part specifies the
+	 *            underlying transport protocol to use. The meaning of the
+	 *            address part is specific to the underlying transport protocol
+	 *            selected.
+	 * 
+	 * <br/>
+	 * <br/>
+	 * 
+	 *            The following transports are defined:
+	 * 
+	 *            <ul>
+	 * 
+	 *            <li>inproc: local in-process (inter-thread) communication
+	 *            transport, see zmq_inproc(7)</li>
+	 * 
+	 *            <li>ipc: local inter-process communication transport, see
+	 *            zmq_ipc(7)</li>
+	 * 
+	 *            <li>tcp: unicast transport using TCP, see zmq_tcp(7)</li>
+	 * 
+	 *            <li>pgm, epgm: reliable multicast transport using PGM, see
+	 *            zmq_pgm(7)</li>
+	 * 
+	 *            </ul>
+	 * 
+	 * @see #bind(String)
+	 * 
+	 */
+	public void connect(final String endpoint) {
+		check(zmqlib.zmq_connect(this.handle, endpoint));
 	}
 
 	/**
@@ -531,18 +666,90 @@ public class ZmqSocket {
 		return Type.findByCode((int) getOptionLong(Option.TYPE));
 	}
 
-	public byte[] recv(final SendRecvOption... opts) {
+	/**
+	 * Returns more message parts to follow.
+	 * 
+	 * <br/>
+	 * <br/>
+	 * 
+	 * The ZMQ_RCVMORE option shall return a boolean value indicating if the
+	 * multi-part message currently being read from the specified socket has
+	 * more message parts to follow. If there are no message parts to follow or
+	 * if the message currently being read is not a multi-part message a value
+	 * of zero shall be returned. Otherwise, a value of 1 shall be returned.
+	 * 
+	 * @return more message parts to follow.
+	 */
+	public boolean isReceiveMore() {
+		return getOptionLong(Option.RCVMORE) != 0;
+	}
 
-		int flags = 0;
-		for (final SendRecvOption opt : opts)
-			flags += opt.code;
+	/**
+	 * Receive a message from a socket. The zmq_recv() function shall receive a
+	 * message from the socket referenced by the socket argument and store it in
+	 * the message referenced by the msg argument. Any content previously stored
+	 * in msg shall be properly deallocated. If there are no messages available
+	 * on the specified socket the zmq_recv() function shall block until the
+	 * request can be satisfied.
+	 * 
+	 * <br/>
+	 * <br/>
+	 * 
+	 * Multi-part messages. A 0MQ message is composed of 1 or more message
+	 * parts; each message part is an independent zmq_msg_t in its own right.
+	 * 0MQ ensures atomic delivery of messages; peers shall receive either all
+	 * message parts of a message or none at all.
+	 * 
+	 * <br/>
+	 * <br/>
+	 * 
+	 * The total number of message parts is unlimited.
+	 * 
+	 * <br/>
+	 * <br/>
+	 * 
+	 * An application wishing to determine if a message is composed of multiple
+	 * parts does so by retrieving the value of the ZMQ_RCVMORE socket option on
+	 * the socket it is receiving the message from. If there are no message
+	 * parts to follow, or if the message is not composed of multiple parts,
+	 * ZMQ_RCVMORE shall report a value of zero. Otherwise, ZMQ_RCVMORE shall
+	 * report a value of 1, indicating that more message parts are to follow.
+	 * 
+	 * 
+	 * @param flags
+	 * 
+	 *            The optional flags argument is a combination of the flags
+	 *            defined below:
+	 * 
+	 *            <ul>
+	 * 
+	 *            <li>ZMQ_NOBLOCK Specifies that the operation should be
+	 *            performed in non-blocking mode. If there are no messages
+	 *            available on the specified socket, the zmq_recv() function
+	 *            shall fail with errno set to EAGAIN.</li>
+	 * 
+	 *            </ul>
+	 * 
+	 * 
+	 * @return the message data
+	 * 
+	 * @see #send(byte[], SendFlag...)
+	 * @see #isReceiveMore()
+	 * 
+	 * 
+	 */
+	public byte[] recv(final RecvFlag... flags) {
+
+		int flag = 0;
+		for (final RecvFlag opt : flags)
+			flag += opt.code;
 
 		final zmq_msg_t msg = new zmq_msg_t();
 
 		try {
 
 			check(zmqlib.zmq_msg_init(msg));
-			check(zmqlib.zmq_recv(this.handle, msg, flags));
+			check(zmqlib.zmq_recv(this.handle, msg, flag));
 
 			final int size = zmqlib.zmq_msg_size(msg).intValue();
 			final Pointer buffer = zmqlib.zmq_msg_data(msg);
@@ -579,11 +786,74 @@ public class ZmqSocket {
 		setOption(Option.UNSUBSCRIBE, filter);
 	}
 
-	public void send(final byte[] data, final SendRecvOption... opts) {
+	/**
+	 * Send a message on a socket. The zmq_send() function shall queue the
+	 * message referenced by the msg argument to be sent to the socket
+	 * referenced by the socket argument.
+	 * 
+	 * The zmq_msg_t structure passed to zmq_send() is nullified during the
+	 * call. If you want to send the same message to multiple sockets you have
+	 * to copy it using (e.g. using zmq_msg_copy()).
+	 * 
+	 * <br/>
+	 * <br/>
+	 * 
+	 * Note. A successful invocation of zmq_send() does not indicate that the
+	 * message has been transmitted to the network, only that it has been queued
+	 * on the socket and 0MQ has assumed responsibility for the message.
+	 * 
+	 * <br/>
+	 * <br/>
+	 * 
+	 * Multi-part messages. A 0MQ message is composed of 1 or more message
+	 * parts; each message part is an independent zmq_msg_t in its own right.
+	 * 0MQ ensures atomic delivery of messages; peers shall receive either all
+	 * message parts of a message or none at all.
+	 * 
+	 * <br/>
+	 * <br/>
+	 * 
+	 * The total number of message parts is unlimited.
+	 * 
+	 * <br/>
+	 * <br/>
+	 * 
+	 * An application wishing to send a multi-part message does so by specifying
+	 * the ZMQ_SNDMORE flag to zmq_send(). The presence of this flag indicates
+	 * to 0MQ that the message being sent is a multi-part message and that more
+	 * message parts are to follow. When the application wishes to send the
+	 * final message part it does so by calling zmq_send() without the
+	 * ZMQ_SNDMORE flag; this indicates that no more message parts are to
+	 * follow.
+	 * 
+	 * @param data
+	 *            data to be sent
+	 * @param flags
+	 *            The optional flags argument is a combination of the flags
+	 *            defined below:
+	 * 
+	 *            <ul>
+	 * 
+	 *            <li>ZMQ_NOBLOCK Specifies that the operation should be
+	 *            performed in non-blocking mode. If the message cannot be
+	 *            queued on the socket, the zmq_send() function shall fail with
+	 *            errno set to EAGAIN.</li>
+	 * 
+	 *            <li>ZMQ_SNDMORE Specifies that the message being sent is a
+	 *            multi-part message, and that further message parts are to
+	 *            follow. Refer to the section regarding multi-part messages
+	 *            below for a detailed description.</li>
+	 * 
+	 *            </ul>
+	 * 
+	 * @see #recv(RecvFlag...)
+	 * 
+	 */
+	public void send(final byte[] data, final SendFlag... flags) {
 
-		int flags = 0;
-		for (final SendRecvOption opt : opts)
-			flags += opt.code;
+		int flag = 0;
+		for (final SendFlag opt : flags)
+			flag += opt.code;
 
 		final Memory m = new Memory(data.length);
 		m.write(0, data, 0, data.length);
@@ -591,7 +861,7 @@ public class ZmqSocket {
 		final zmq_msg_t msg = new zmq_msg_t();
 		try {
 			check(zmqlib.zmq_msg_init_data(msg, m, new NativeLong(data.length), null, null));
-			check(zmqlib.zmq_send(this.handle, msg, flags));
+			check(zmqlib.zmq_send(this.handle, msg, flag));
 		} finally {
 			check(zmqlib.zmq_msg_close(msg));
 		}
