@@ -13,7 +13,7 @@
 
 	<licenses>
 		<license>
-			<name>LGPL</name>
+			<name>LGPL v2</name>
 		</license>
 	</licenses>
 
@@ -37,6 +37,7 @@
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
 
+		<maven-buildnumber-plugin.version>1.0</maven-buildnumber-plugin.version>
 		<maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
 		<maven-javadoc-plugin.version>2.7</maven-javadoc-plugin.version>
 		<maven-shade-plugin.version>1.4</maven-shade-plugin.version>
@@ -67,38 +68,9 @@
 		<plugins>
 
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>${maven-shade-plugin.version}</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>${maven-jar-plugin.version}</version>
-				<inherited>true</inherited>
-				<configuration>
-					<archive>                   
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.0</version>
+				<version>${maven-buildnumber-plugin.version}</version>
 				<executions>
 					<execution>
 						<phase>validate</phase>
@@ -108,11 +80,53 @@
 					</execution>
 				</executions>
 				<configuration>
-					<doCheck>true</doCheck>
-					<doUpdate>true</doUpdate>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+					<timestampPropertyName>buildTimestamp</timestampPropertyName>
+					<timestampFormat>{0,date,yyyy-MM-dd HH:mm Z}</timestampFormat>
 				</configuration>
 			</plugin>
       
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven-jar-plugin.version}</version>
+				<inherited>true</inherited>
+				<configuration>
+					<archive>                   
+						<manifest>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+						<manifestEntries>
+							<Implementation-Version>${buildNumber} ${buildTimestamp}</Implementation-Version>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>${maven-shade-plugin.version}</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<manifestEntries>
+										<Main-Class>org.zeromq.App</Main-Class>
+									</manifestEntries>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
       		<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
